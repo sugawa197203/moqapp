@@ -8,6 +8,7 @@ run = "npm install"
 run = "npm run dev"
 
 [tasks.build]
+depends = ["install"]
 run = "npm run build"
 
 [tasks.typecheck]
