@@ -12,8 +12,21 @@ MoQ の Subscriber の Web アプリケーション
 
 ## 技術
 
-- moqplaya
+- [moq-playa](https://github.com/openmoq/moq-playa) (`@openmoq/playa`)
 
 ## 開発
 
 - miseで開発環境を構築
+
+### セットアップ
+
+```sh
+mise install
+mise run install
+mise run dev
+mise run build
+```
+
+### 構成
+
+- `src/main.ts` — UI

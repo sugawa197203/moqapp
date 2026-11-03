@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MoQ Subscriber</title>
+    <script type="module" crossorigin src="/assets/index-CeA0smY3.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-JMR6-T_1.css">
+  </head>
+  <body>
+    <main>
+      <h1>MoQ Subscriber</h1>
+
+      <form id="connect-form">
+        <label>
+          Relay URL
+          <input id="relay-url" type="url" placeholder="https://relay.example.com/" required />
+        </label>
+        <label>
+          Namespace
+          <input id="namespace" type="text" placeholder="live/broadcast" required />
+        </label>
+        <label>
+          MoQT draft
+          <select id="draft">
+            <option value="16" selected>16</option>
+            <option value="14">14</option>
+            <option value="18">18</option>
+            <option value="22">22</option>
+          </select>
+        </label>
+        <label>
+          ABR
+          <select id="abr-algorithm"></select>
+        </label>
+        <label>
+          CBR level
+          <select id="cbr-level" disabled></select>
+        </label>
+        <button type="submit">Connect</button>
+        <button type="button" id="disconnect" disabled>Disconnect</button>
+      </form>
+
+      <p id="status">未接続</p>
+
+      <div id="player-container"></div>
+    </main>
+  </body>
+</html>
