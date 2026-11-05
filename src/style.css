@@ -5,6 +5,7 @@ label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; 
 input, select, button { padding: 0.4rem 0.6rem; font: inherit; }
 #relay-url { width: 22rem; }
 #status { color: #9cf; }
+#stats { color: #999; font-size: 0.8rem; font-family: monospace; min-height: 1em; }
 #player-container { width: 100%; margin-top: 1rem; }
 #player-container canvas, #player-container video { display: block; width: 100%; background: #000; border-radius: 8px; }
 #player-container [hidden] { display: none; }

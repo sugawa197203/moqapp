@@ -7,6 +7,8 @@ const namespaceInput = $<HTMLInputElement>("namespace");
 const qualitySelect = $<HTMLSelectElement>("quality");
 const disconnectBtn = $<HTMLButtonElement>("disconnect");
 const statusEl = $("status");
+const statsEl = $("stats");
+const decoding = new URLSearchParams(location.search).get("decoding") === "mse" ? "mse" : "frame";
 const container = $("player-container");
 
 let player: Player | undefined;
@@ -17,6 +19,7 @@ async function disconnect() {
   player = undefined;
   qualitySelect.replaceChildren();
   qualitySelect.disabled = true;
+  statsEl.textContent = "";
   disconnectBtn.disabled = true;
   await p?.destroy();
 }
@@ -32,7 +35,7 @@ form.addEventListener("submit", async (e) => {
     namespace: namespaceInput.value,
     draftVersion: 18,
     muted: true,
-    moqtPlayerConfig: { locmafDecoding: "frame" },
+    moqtPlayerConfig: { locmafDecoding: decoding },
   });
   player = p;
   const current = () => player === p;
@@ -49,6 +52,11 @@ form.addEventListener("submit", async (e) => {
   });
   p.on("qualitychange", ({ level, auto }) => {
     if (current()) statusEl.textContent = `playing: ${level.label} ${auto ? "(auto)" : "(fixed)"}`;
+  });
+  p.on("stats", (s) => {
+    if (!current()) return;
+    const res = s.resolution ? `${s.resolution.width}x${s.resolution.height}` : "-";
+    statsEl.textContent = `${decoding} ${res} ${Math.round(s.bitrate / 1000)}kbps decoded=${s.framesDecoded} dropped=${s.framesDropped} stalls=${s.stallCount} ttff=${s.timeToFirstFrameMs ?? "-"}ms`;
   });
   p.on("error", ({ severity, code, message }) => {
     if (current()) statusEl.textContent = `error [${severity}/${code}] ${message}`;
