@@ -30,7 +30,7 @@ form.addEventListener("submit", async (e) => {
   const p = new Player(container, {
     url: urlInput.value,
     namespace: namespaceInput.value,
-    draftVersion: 22,
+    draftVersion: 18,
     muted: true,
   });
   player = p;
