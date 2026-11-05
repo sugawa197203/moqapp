@@ -1,0 +1,6 @@
+FROM ghcr.io/openmoq/moqx:latest
+
+ENV MOQX_MOQT_VERSIONS="[18]" \
+    MOQX_INSECURE=true
+
+EXPOSE 4433/udp

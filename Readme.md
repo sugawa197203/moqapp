@@ -89,3 +89,29 @@ ffmpeg -re -stream_loop -1 -i input.mp4 \
   -window_size 20 -extra_window_size 20 \
   http://127.0.0.1:8080/ingest/
 ```
+
+## draft18 でテスト配信
+
+### Relay
+
+```sh
+docker build -f Dockerfile.moqx -t moqapp-moqx .
+docker run -d --name moqx -p 4433:4433/udp moqapp-moqx
+```
+
+### Publisher のホスト
+
+- `--endpoint`: Relay の URL
+
+```sh
+docker build -f Dockerfile.moqxr -t moqapp-moqxr .
+docker run -d --name moqxr --restart unless-stopped -p 8080:8080 moqapp-moqxr \
+  --endpoint https://RELAY.HOST:4433/moq-relay \
+  --namespace live/broadcast
+```
+
+Publisher起動後、ffmpeg で動画を Publisher に送信する (送信先は `http://127.0.0.1:8080/ingest/`)。
+
+### Subscriber のブラウザ
+
+- Relay URL は `https://RELAY.HOST:4433/moq-relay`、Namespace は `live/broadcast`。

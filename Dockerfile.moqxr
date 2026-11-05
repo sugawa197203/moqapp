@@ -1,0 +1,26 @@
+FROM debian:bookworm AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential cmake ninja-build git pkg-config libssl-dev ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG MOQXR_REF=main
+RUN git clone --depth 1 --branch "${MOQXR_REF}" https://github.com/openmoq/moqxr /src
+WORKDIR /src
+RUN cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+        -DOPENMOQ_BUILD_TESTS=OFF -DOPENMOQ_RUN_PICOQUIC_SMOKE_TESTS=OFF \
+    && cmake --build build -j"$(nproc)"
+
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends libssl3 ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /src/build/openmoq-publisher /usr/local/bin/openmoq-publisher
+
+EXPOSE 8080
+
+ENTRYPOINT ["openmoq-publisher", \
+    "--live-source", "dash", "--dash-listen", "0.0.0.0:8080", "--dash-path", "/ingest", \
+    "--transport", "webtransport", "--draft", "18", "--publish-catalog", \
+    "--forward", "1", "--timeout", "86400", "--insecure"]
