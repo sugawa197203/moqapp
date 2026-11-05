@@ -23,4 +23,4 @@ EXPOSE 8080
 ENTRYPOINT ["openmoq-publisher", \
     "--live-source", "dash", "--dash-listen", "0.0.0.0:8080", "--dash-path", "/ingest", \
     "--transport", "webtransport", "--draft", "18", "--publish-catalog", \
-    "--forward", "1", "--timeout", "86400", "--insecure"]
+    "--forward", "1", "--timeout", "86400", "--initial-group-id", "time", "--insecure"]
