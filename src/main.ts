@@ -32,6 +32,7 @@ form.addEventListener("submit", async (e) => {
     namespace: namespaceInput.value,
     draftVersion: 18,
     muted: true,
+    moqtPlayerConfig: { locmafDecoding: "frame" },
   });
   player = p;
   const current = () => player === p;
