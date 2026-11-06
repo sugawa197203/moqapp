@@ -33,7 +33,10 @@
     <p id="status">disconnected</p>
     <p id="stats"></p>
 
-    <div id="player-container"></div>
+    <div id="player-container">
+      <canvas id="canvas" width="1920" height="1080"></canvas>
+      <video id="video" muted playsinline hidden></video>
+    </div>
   </main>
   <script type="module" src="/src/main.ts"></script>
 </body>

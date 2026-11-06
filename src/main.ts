@@ -10,6 +10,10 @@ const statusEl = $("status");
 const statsEl = $("stats");
 const decoding = new URLSearchParams(location.search).get("decoding") === "mse" ? "mse" : "frame";
 const container = $("player-container");
+const canvasEl = $<HTMLCanvasElement>("canvas");
+const videoEl = $<HTMLVideoElement>("video");
+canvasEl.hidden = decoding === "mse";
+videoEl.hidden = decoding !== "mse";
 const fullscreenBtn = $<HTMLButtonElement>("fullscreen");
 
 let player: Player | undefined;
@@ -31,7 +35,9 @@ form.addEventListener("submit", async (e) => {
   await disconnect();
   if (id !== generation) return;
   statusEl.textContent = "connecting...";
-  const p = new Player(container, {
+  const p = new Player(null, {
+    canvas: canvasEl,
+    video: videoEl,
     url: urlInput.value,
     namespace: namespaceInput.value,
     draftVersion: 18,
@@ -56,6 +62,10 @@ form.addEventListener("submit", async (e) => {
   });
   p.on("stats", (s) => {
     if (!current()) return;
+    if (s.resolution && (canvasEl.width !== s.resolution.width || canvasEl.height !== s.resolution.height)) {
+      canvasEl.width = s.resolution.width;
+      canvasEl.height = s.resolution.height;
+    }
     const res = s.resolution ? `${s.resolution.width}x${s.resolution.height}` : "-";
     statsEl.textContent = `${decoding} ${res} ${Math.round(s.bitrate / 1000)}kbps decoded=${s.framesDecoded} dropped=${s.framesDropped} stalls=${s.stallCount} ttff=${s.timeToFirstFrameMs ?? "-"}ms`;
   });
