@@ -10,6 +10,7 @@ const statusEl = $("status");
 const statsEl = $("stats");
 const decoding = new URLSearchParams(location.search).get("decoding") === "mse" ? "mse" : "frame";
 const container = $("player-container");
+const fullscreenBtn = $<HTMLButtonElement>("fullscreen");
 
 let player: Player | undefined;
 let generation = 0;
@@ -84,3 +85,10 @@ disconnectBtn.addEventListener("click", async () => {
   await disconnect();
   statusEl.textContent = "disconnected";
 });
+
+const toggleFullscreen = () => {
+  if (document.fullscreenElement) void document.exitFullscreen();
+  else void container.requestFullscreen();
+};
+fullscreenBtn.addEventListener("click", toggleFullscreen);
+container.addEventListener("dblclick", toggleFullscreen);

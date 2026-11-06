@@ -9,3 +9,5 @@ input, select, button { padding: 0.4rem 0.6rem; font: inherit; }
 #player-container { width: 100%; margin-top: 1rem; }
 #player-container canvas, #player-container video { display: block; width: 100%; background: #000; border-radius: 8px; }
 #player-container [hidden] { display: none; }
+#player-container:fullscreen { display: flex; align-items: center; justify-content: center; margin: 0; background: #000; }
+#player-container:fullscreen canvas, #player-container:fullscreen video { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
