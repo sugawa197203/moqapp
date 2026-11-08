@@ -114,4 +114,85 @@ Publisher起動後、ffmpeg で動画を Publisher に送信する (送信先は
 
 ### Subscriber のブラウザ
 
-- Relay URL は `https://RELAY.HOST:4433/moq-relay`、Namespace は `live/broadcast`。
+- Relay URL は `https://RELAY.HOST:4433/moq-relay`、Namespace は `live/broadcast`
+
+```
+ffmpeg `
+  -hide_banner `
+  -stats `
+  -f dshow `
+  -rtbufsize 256M `
+  -thread_queue_size 2048 `
+  -pixel_format nv12 `
+  -framerate 30 `
+  -video_size 1920x1080 `
+  -i 'video=HP Wide Vision 5MP Camera' `
+  -f dshow `
+  -rtbufsize 16M `
+  -thread_queue_size 1024 `
+  -i 'audio=マイク配列 (2- デジタルマイク向けインテル® スマート・サウンド・テクノロジー)' `
+  -filter_complex "[0:v]split=4[v1080][v720src][v360src][v144src];[v720src]scale=1280:720:flags=bicubic,format=nv12[v720];[v360src]scale=640:360:flags=bicubic,format=nv12[v360];[v144src]scale=256:144:flags=bicubic,format=nv12[v144]" `
+  -map "[v1080]" `
+  -c:v:0 h264_qsv `
+  -preset:v:0 medium `
+  -async_depth:v:0 1 `
+  -look_ahead:v:0 0 `
+  -b:v:0 12000k `
+  -minrate:v:0 12000k `
+  -maxrate:v:0 12000k `
+  -bufsize:v:0 12000k `
+  -g:v:0 15 `
+  -bf:v:0 0 `
+  -map "[v720]" `
+  -c:v:1 h264_qsv `
+  -preset:v:1 medium `
+  -async_depth:v:1 1 `
+  -look_ahead:v:1 0 `
+  -b:v:1 3500k `
+  -minrate:v:1 3500k `
+  -maxrate:v:1 3500k `
+  -bufsize:v:1 3500k `
+  -g:v:1 15 `
+  -bf:v:1 0 `
+  -map "[v360]" `
+  -c:v:2 h264_qsv `
+  -preset:v:2 faster `
+  -async_depth:v:2 1 `
+  -look_ahead:v:2 0 `
+  -b:v:2 1000k `
+  -minrate:v:2 1000k `
+  -maxrate:v:2 1000k `
+  -bufsize:v:2 1000k `
+  -g:v:2 15 `
+  -bf:v:2 0 `
+  -map "[v144]" `
+  -c:v:3 h264_qsv `
+  -preset:v:3 faster `
+  -async_depth:v:3 1 `
+  -look_ahead:v:3 0 `
+  -b:v:3 250k `
+  -minrate:v:3 250k `
+  -maxrate:v:3 250k `
+  -bufsize:v:3 250k `
+  -g:v:3 15 `
+  -bf:v:3 0 `
+  -map 1:a:0 `
+  -c:a aac `
+  -b:a 128k `
+  -ar 48000 `
+  -ac 2 `
+  -af "aresample=async=1:first_pts=0" `
+  -f dash `
+  -seg_duration 2 `
+  -use_template 1 `
+  -use_timeline 0 `
+  -init_seg_name 'video$RepresentationID$' `
+  -media_seg_name 'video$RepresentationID$' `
+  -adaptation_sets 'id=0,streams=v id=1,streams=a' `
+  -multiple_requests 1 `
+  -streaming 1 `
+  -remove_at_exit 0 `
+  -window_size 20 `
+  -extra_window_size 20 `
+  'http://172.22.170.159:8080/ingest/'
+```
